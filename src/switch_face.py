@@ -154,7 +154,6 @@ def warp_im(im, M, dshape):
                    flags=cv2.WARP_INVERSE_MAP)
     return output_im
 
-
 def correct_colors(im1, im2, landmarks1):
     blur_amount = COLOUR_CORRECT_BLUR_FRAC * numpy.linalg.norm(
         numpy.mean(landmarks1[LEFT_EYE_POINTS], axis=0) -
@@ -189,20 +188,19 @@ cv2.destroyWindow("Image0")
 cv2.imshow("Image1", annote_landmarks(im2, landmarks2))
 cv2.waitKey(0)
 
-M = transformation_from_points(landmarks1[ALIGN_POINTS],
-                               landmarks2[ALIGN_POINTS])
+M = transformation_from_points(landmarks1[ALIGN_POINTS], landmarks2[ALIGN_POINTS])
 
 mask = get_face_mask(im2, landmarks2)
 warped_mask = warp_im(mask, M, im1.shape)
-combined_mask = numpy.max([get_face_mask(im1, landmarks1), warped_mask],
-                          axis=0)
+combined_mask = numpy.max([get_face_mask(im1, landmarks1), warped_mask], axis=0)
 
 warped_im2 = warp_im(im2, M, im1.shape)
 warped_corrected_im2 = correct_colors(im1, warped_im2, landmarks1)
 
 output_im = im1 * (1.0 - combined_mask) + warped_corrected_im2 * combined_mask
 
-cv2.imshow("Image1", output_im.astype(output_im.dtype))  # warp_im(im2, M, im1.shape)
+cv2.imshow("Image1", output_im.astype(output_im.dtype))
+warp_im(im2, M, im1.shape)
 cv2.waitKey(0)
 cv2.destroyWindow("Image1")
 
